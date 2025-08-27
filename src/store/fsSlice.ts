@@ -55,8 +55,37 @@ const fsSlice = createSlice({
       parent.children.push(newFolderId);
       parent.updatedAt = Date.now();
     },
+    addFile: (state, action: PayloadAction<{ parentId: NodeID; name: string; ext: string }>) => {
+      const { parentId, name, ext } = action.payload;
+      const trimmedName = name.trim();
+
+      if (!trimmedName || !ext) {
+        console.error('File name and extension cannot be empty.');
+        return;
+      }
+
+      const parent = state.nodes[parentId];
+      if (parent.type !== 'folder') {
+        console.error('Cannot add items under a file.');
+        return;
+      }
+
+      const newFileId = nanoid();
+      state.nodes[newFileId] = {
+        id: newFileId,
+        parentId,
+        name: trimmedName,
+        type: 'file',
+        ext,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      };
+
+      parent.children.push(newFileId);
+      parent.updatedAt = Date.now();
+    },
   },
 });
 
-export const { addFolder } = fsSlice.actions;
+export const { addFolder, addFile } = fsSlice.actions;
 export default fsSlice.reducer;
