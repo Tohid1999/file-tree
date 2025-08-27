@@ -1,6 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import type { UIState } from './types';
 
-const initialState = {};
+const initialState: UIState = {
+  expanded: {},
+  selection: null,
+  renameEditingId: null,
+};
 
 const uiSlice = createSlice({
   name: 'ui',
