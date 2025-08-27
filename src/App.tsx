@@ -2,9 +2,11 @@ import Tree from '@components/Tree';
 
 function App() {
   return (
-    <main>
-      <h1>File Tree Manager</h1>
-      <Tree />
+    <main className="bg-gray-100 min-h-screen p-4 font-sans">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
+        <h1 className="text-2xl font-bold mb-4">File Tree Manager</h1>
+        <Tree />
+      </div>
     </main>
   );
 }

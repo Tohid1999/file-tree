@@ -27,25 +27,42 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
     return null;
   }
 
+  const buttonStyles = 'ml-2 px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300';
+
   return (
-    <div className="ml-5">
-      <div>
-        <span>{node.type === 'folder' ? '[F]' : '[f]'}</span>
+    <div className="ml-5 my-1">
+      <div className="flex items-center p-1 rounded hover:bg-gray-100">
+        <span className="w-6">{node.type === 'folder' ? '[F]' : '[f]'}</span>
         <span>
           {node.name}
-          {node.type === 'file' && <span>{node.ext}</span>}
+          {node.type === 'file' && <span className="text-gray-500">{node.ext}</span>}
         </span>
-        {node.type === 'folder' && (
-          <button type="button" onClick={handleAddFile}>
-            Add File
+        <div className="ml-auto">
+          {node.type === 'folder' && (
+            <button type="button" onClick={handleAddFile} className={buttonStyles}>
+              Add File
+            </button>
+          )}
+          {node.type === 'folder' && (
+            <button type="button" className={buttonStyles}>
+              Add Folder
+            </button>
+          )}
+          <button type="button" className={buttonStyles}>
+            Rename
           </button>
-        )}
-        {node.type === 'folder' && <button type="button">Add Folder</button>}
-        <button type="button">Rename</button>
-        <button type="button">Delete</button>
+          <button type="button" className={buttonStyles}>
+            Delete
+          </button>
+        </div>
       </div>
-      {node.type === 'folder' &&
-        node.children.map((childId) => <NodeRow key={childId} nodeId={childId} />)}
+      {node.type === 'folder' && (
+        <div className="pl-5 border-l-2 border-gray-200">
+          {node.children.map((childId) => (
+            <NodeRow key={childId} nodeId={childId} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -16,12 +16,20 @@ const Tree = () => {
   };
 
   return (
-    <div>
-      <h2>File Tree</h2>
-      <button type="button" onClick={handleAddFolder}>
-        Add Folder to Root
-      </button>
-      <NodeRow nodeId={rootId} />
+    <div className="mt-4">
+      <div className="flex items-center mb-2">
+        <h2 className="text-xl font-semibold">File Tree</h2>
+        <button
+          type="button"
+          onClick={handleAddFolder}
+          className="ml-4 px-2 py-1 bg-primary text-white rounded hover:bg-primary-hover"
+        >
+          Add Folder to Root
+        </button>
+      </div>
+      <div className="border rounded p-2">
+        <NodeRow nodeId={rootId} />
+      </div>
     </div>
   );
 };
