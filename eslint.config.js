@@ -4,6 +4,7 @@ import eslintReact from "@eslint-react/eslint-plugin";
 import hooks from "eslint-plugin-react-hooks";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import prettierConfig from "eslint-config-prettier";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 import js from "@eslint/js";
 
 export default tseslint.config(
@@ -18,6 +19,7 @@ export default tseslint.config(
     plugins: {
       "react-hooks": hooks,
       "jsx-a11y": jsxA11y,
+      "simple-import-sort": simpleImportSort,
     },
     languageOptions: {
       globals: {
@@ -27,6 +29,20 @@ export default tseslint.config(
     rules: {
       ...hooks.configs.recommended.rules,
       ...jsxA11y.configs.recommended.rules,
+      "simple-import-sort/imports": [
+        "error",
+        {
+          groups: [
+            // Packages.
+            ["^[^@\\.]"],
+            // Aliased imports.
+            ["^@"],
+            // Relative imports.
+            ["^\\."],
+          ],
+        },
+      ],
+      "simple-import-sort/exports": "error",
     },
   },
   prettierConfig

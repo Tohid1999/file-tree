@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-
 import { nanoid } from 'nanoid';
+
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+
 import type { FSState, NodeID } from './types';
 
 const rootId = nanoid();

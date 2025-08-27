@@ -1,7 +1,8 @@
-import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '@store/store';
-import { addFolder } from '@store/fsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
 import NodeRow from '@components/NodeRow';
+import { addFolder } from '@store/fsSlice';
+import type { RootState } from '@store/store';
 
 const Tree = () => {
   const dispatch = useDispatch();
