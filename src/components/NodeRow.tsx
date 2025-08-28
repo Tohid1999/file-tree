@@ -1,7 +1,8 @@
+import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 
 import InlineEditInput from '@components/InlineEditInput';
-import { addFile, renameFile, renameNode } from '@store/fsSlice';
+import { addFile, deleteFile, renameFile, renameNode } from '@store/fsSlice';
 import type { RootState } from '@store/store';
 import type { NodeID } from '@store/types';
 import { startRename, stopRename } from '@store/uiSlice';
@@ -46,6 +47,13 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
     dispatch(stopRename());
   };
 
+  const handleDeleteFile = () => {
+    if (node.type === 'file') {
+      dispatch(deleteFile(nodeId));
+      toast.success(`File "${node.name}${node.ext}" deleted.`);
+    }
+  };
+
   if (!node) {
     return null;
   }
@@ -84,7 +92,11 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
           <button type="button" onClick={handleStartRename} className={buttonStyles}>
             Rename
           </button>
-          <button type="button" className={buttonStyles}>
+          <button
+            type="button"
+            onClick={node.type === 'file' ? handleDeleteFile : undefined}
+            className={buttonStyles}
+          >
             Delete
           </button>
         </div>

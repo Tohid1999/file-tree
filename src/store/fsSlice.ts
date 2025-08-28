@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { FSState, NodeID } from './types';
+import type { FolderNode, FSState, NodeID } from './types';
 
 const rootId = nanoid();
 
@@ -89,6 +89,16 @@ const fsSlice = createSlice({
         node.updatedAt = Date.now();
       }
     },
+    deleteFile: (state, action: PayloadAction<NodeID>) => {
+      const nodeId = action.payload;
+      const node = state.nodes[nodeId];
+
+      if (node?.type === 'file' && node.parentId) {
+        const parent = state.nodes[node.parentId] as FolderNode;
+        parent.children = parent.children.filter((id) => id !== nodeId);
+        delete state.nodes[nodeId];
+      }
+    },
     addFile: (state, action: PayloadAction<{ parentId: NodeID; name: string; ext: string }>) => {
       const { parentId, name, ext } = action.payload;
       const trimmedName = name.trim();
@@ -121,5 +131,5 @@ const fsSlice = createSlice({
   },
 });
 
-export const { addFolder, addFile, renameNode, renameFile } = fsSlice.actions;
+export const { addFolder, addFile, renameNode, renameFile, deleteFile } = fsSlice.actions;
 export default fsSlice.reducer;
