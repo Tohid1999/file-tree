@@ -55,6 +55,21 @@ const fsSlice = createSlice({
       parent.children.push(newFolderId);
       parent.updatedAt = Date.now();
     },
+    renameNode: (state, action: PayloadAction<{ nodeId: NodeID; newName: string }>) => {
+      const { nodeId, newName } = action.payload;
+      const trimmedName = newName.trim();
+
+      if (!trimmedName) {
+        console.error('Name cannot be empty.');
+        return;
+      }
+
+      const node = state.nodes[nodeId];
+      if (node) {
+        node.name = trimmedName;
+        node.updatedAt = Date.now();
+      }
+    },
     addFile: (state, action: PayloadAction<{ parentId: NodeID; name: string; ext: string }>) => {
       const { parentId, name, ext } = action.payload;
       const trimmedName = name.trim();
@@ -87,5 +102,5 @@ const fsSlice = createSlice({
   },
 });
 
-export const { addFolder, addFile } = fsSlice.actions;
+export const { addFolder, addFile, renameNode } = fsSlice.actions;
 export default fsSlice.reducer;
