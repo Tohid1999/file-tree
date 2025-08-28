@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import InlineEditInput from '@components/InlineEditInput';
-import { addFile, renameNode } from '@store/fsSlice';
+import { addFile, renameFile, renameNode } from '@store/fsSlice';
 import type { RootState } from '@store/store';
 import type { NodeID } from '@store/types';
 import { startRename, stopRename } from '@store/uiSlice';
@@ -30,8 +30,15 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
     dispatch(startRename(nodeId));
   };
 
-  const handleRenameSave = (newName: string) => {
-    dispatch(renameNode({ nodeId, newName }));
+  const handleRenameSave = (newValue: string) => {
+    if (node.type === 'folder') {
+      dispatch(renameNode({ nodeId, newName: newValue }));
+    } else {
+      const parts = newValue.split('.');
+      const newExt = parts.length > 1 ? `.${parts.pop()}` : '';
+      const newName = parts.join('.');
+      dispatch(renameFile({ nodeId, newName, newExt }));
+    }
     dispatch(stopRename());
   };
 
@@ -45,13 +52,15 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
 
   const buttonStyles = 'ml-2 px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300';
 
+  const initialRenameValue = node.type === 'file' ? `${node.name}${node.ext}` : node.name;
+
   return (
     <div className="ml-5 my-1">
       <div className="flex items-center p-1 rounded hover:bg-gray-100">
         <span className="w-6">{node.type === 'folder' ? '[F]' : '[f]'}</span>
         {isRenaming ? (
           <InlineEditInput
-            value={node.name}
+            value={initialRenameValue}
             onSave={handleRenameSave}
             onCancel={handleRenameCancel}
           />

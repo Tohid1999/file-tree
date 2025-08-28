@@ -65,8 +65,27 @@ const fsSlice = createSlice({
       }
 
       const node = state.nodes[nodeId];
-      if (node) {
+      if (node.type === 'folder') {
         node.name = trimmedName;
+        node.updatedAt = Date.now();
+      }
+    },
+    renameFile: (
+      state,
+      action: PayloadAction<{ nodeId: NodeID; newName: string; newExt: string }>
+    ) => {
+      const { nodeId, newName, newExt } = action.payload;
+      const trimmedName = newName.trim();
+
+      if (!trimmedName || !newExt) {
+        console.error('File name and extension cannot be empty.');
+        return;
+      }
+
+      const node = state.nodes[nodeId];
+      if (node.type === 'file') {
+        node.name = trimmedName;
+        node.ext = newExt;
         node.updatedAt = Date.now();
       }
     },
@@ -102,5 +121,5 @@ const fsSlice = createSlice({
   },
 });
 
-export const { addFolder, addFile, renameNode } = fsSlice.actions;
+export const { addFolder, addFile, renameNode, renameFile } = fsSlice.actions;
 export default fsSlice.reducer;
