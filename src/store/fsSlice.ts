@@ -99,6 +99,31 @@ const fsSlice = createSlice({
         delete state.nodes[nodeId];
       }
     },
+    deleteFolder: (state, action: PayloadAction<NodeID>) => {
+      const folderId = action.payload;
+
+      if (folderId === state.rootId) {
+        console.error('Cannot delete the root folder.');
+        return;
+      }
+
+      const folder = state.nodes[folderId];
+      if (!folder || folder.type !== 'folder') return;
+
+      const parent = state.nodes[folder.parentId!] as FolderNode;
+      parent.children = parent.children.filter((id) => id !== folderId);
+
+      const deleteQueue: NodeID[] = [folderId];
+      while (deleteQueue.length > 0) {
+        const currentId = deleteQueue.shift()!;
+        const currentNode = state.nodes[currentId];
+
+        if (currentNode.type === 'folder') {
+          deleteQueue.push(...currentNode.children);
+        }
+        delete state.nodes[currentId];
+      }
+    },
     addFile: (state, action: PayloadAction<{ parentId: NodeID; name: string; ext: string }>) => {
       const { parentId, name, ext } = action.payload;
       const trimmedName = name.trim();
@@ -131,5 +156,6 @@ const fsSlice = createSlice({
   },
 });
 
-export const { addFolder, addFile, renameNode, renameFile, deleteFile } = fsSlice.actions;
+export const { addFolder, addFile, renameNode, renameFile, deleteFile, deleteFolder } =
+  fsSlice.actions;
 export default fsSlice.reducer;

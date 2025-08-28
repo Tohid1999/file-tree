@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { confirmDelete } from '@/config/delete';
+import ConfirmDeleteModal from '@components/ConfirmDeleteModal';
 import InlineEditInput from '@components/InlineEditInput';
-import { addFile, deleteFile, renameFile, renameNode } from '@store/fsSlice';
-import type { RootState } from '@store/store';
+import { addFile, deleteFile, deleteFolder, renameFile, renameNode } from '@store/fsSlice';
+import type { AppDispatch, RootState } from '@store/store';
 import type { NodeID } from '@store/types';
 import { startRename, stopRename } from '@store/uiSlice';
 
@@ -12,9 +15,14 @@ interface NodeRowProps {
 }
 
 const NodeRow = ({ nodeId }: NodeRowProps) => {
-  const dispatch = useDispatch();
-  const node = useSelector((state: RootState) => state.fs.nodes[nodeId]);
-  const isRenaming = useSelector((state: RootState) => state.ui.renameEditingId === nodeId);
+  const dispatch = useDispatch<AppDispatch>();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const { node, isRenaming, isRoot } = useSelector((state: RootState) => ({
+    node: state.fs.nodes[nodeId],
+    isRenaming: state.ui.renameEditingId === nodeId,
+    isRoot: state.fs.rootId === nodeId,
+  }));
 
   const handleAddFile = () => {
     const fileName = prompt('Enter file name (e.g., notes.txt):');
@@ -28,6 +36,10 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
   };
 
   const handleStartRename = () => {
+    if (isRoot) {
+      toast.error('Root cannot be modified.');
+      return;
+    }
     dispatch(startRename(nodeId));
   };
 
@@ -47,11 +59,35 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
     dispatch(stopRename());
   };
 
-  const handleDeleteFile = () => {
+  const handleDelete = () => {
+    if (isRoot) {
+      toast.error('Root cannot be deleted.');
+      return;
+    }
+
+    const nodeType = node.type;
+    if (confirmDelete[nodeType]) {
+      setIsDeleteModalOpen(true);
+    } else {
+      if (nodeType === 'file') {
+        dispatch(deleteFile(nodeId));
+        toast.success(`File "${node.name}${node.ext}" deleted.`);
+      } else if (nodeType === 'folder') {
+        dispatch(deleteFolder(nodeId));
+        toast.success(`Folder "${node.name}" deleted.`);
+      }
+    }
+  };
+
+  const handleConfirmDelete = () => {
     if (node.type === 'file') {
       dispatch(deleteFile(nodeId));
       toast.success(`File "${node.name}${node.ext}" deleted.`);
+    } else if (node.type === 'folder') {
+      dispatch(deleteFolder(nodeId));
+      toast.success(`Folder "${node.name}" deleted.`);
     }
+    setIsDeleteModalOpen(false);
   };
 
   if (!node) {
@@ -61,9 +97,17 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
   const buttonStyles = 'ml-2 px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300';
 
   const initialRenameValue = node.type === 'file' ? `${node.name}${node.ext}` : node.name;
+  const nodeDisplayName = node.type === 'file' ? `${node.name}${node.ext}` : node.name;
 
   return (
     <div className="ml-5 my-1">
+      {isDeleteModalOpen && (
+        <ConfirmDeleteModal
+          nodeName={nodeDisplayName}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setIsDeleteModalOpen(false)}
+        />
+      )}
       <div className="flex items-center p-1 rounded hover:bg-gray-100">
         <span className="w-6">{node.type === 'folder' ? '[F]' : '[f]'}</span>
         {isRenaming ? (
@@ -92,11 +136,7 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
           <button type="button" onClick={handleStartRename} className={buttonStyles}>
             Rename
           </button>
-          <button
-            type="button"
-            onClick={node.type === 'file' ? handleDeleteFile : undefined}
-            className={buttonStyles}
-          >
+          <button type="button" onClick={handleDelete} className={buttonStyles}>
             Delete
           </button>
         </div>
