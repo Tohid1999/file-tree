@@ -1,5 +1,8 @@
 import { nanoid } from 'nanoid';
+import toast from 'react-hot-toast';
 
+import { allowedExtensions } from '@/config/files';
+import { hasForbiddenChars, isAllowedExt } from '@/lib/validation';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -31,13 +34,27 @@ const fsSlice = createSlice({
       const trimmedName = name.trim();
 
       if (!trimmedName) {
-        console.error('Folder name cannot be empty.');
+        toast.error('Folder name cannot be empty.');
+        return;
+      }
+      if (hasForbiddenChars(trimmedName)) {
+        toast.error('Name contains forbidden characters.');
         return;
       }
 
       const parent = state.nodes[parentId];
       if (parent.type !== 'folder') {
-        console.error('Cannot add items under a file.');
+        toast.error('Cannot add items under a file.');
+        return;
+      }
+
+      const isDuplicate = parent.children.some((childId) => {
+        const child = state.nodes[childId];
+        return child.type === 'folder' && child.name === trimmedName;
+      });
+
+      if (isDuplicate) {
+        toast.error('A folder with this name already exists.');
         return;
       }
 
@@ -60,12 +77,32 @@ const fsSlice = createSlice({
       const trimmedName = newName.trim();
 
       if (!trimmedName) {
-        console.error('Name cannot be empty.');
+        toast.error('Name cannot be empty.');
+        return;
+      }
+      if (hasForbiddenChars(trimmedName)) {
+        toast.error('Name contains forbidden characters.');
         return;
       }
 
       const node = state.nodes[nodeId];
+      if (node.parentId === null) {
+        toast.error('Root cannot be modified.');
+        return;
+      }
+
+      const parent = state.nodes[node.parentId] as FolderNode;
+
       if (node.type === 'folder') {
+        const isDuplicate = parent.children.some((childId) => {
+          const child = state.nodes[childId];
+          return child.id !== nodeId && child.type === 'folder' && child.name === trimmedName;
+        });
+
+        if (isDuplicate) {
+          toast.error('A folder with this name already exists.');
+          return;
+        }
         node.name = trimmedName;
         node.updatedAt = Date.now();
       }
@@ -76,16 +113,47 @@ const fsSlice = createSlice({
     ) => {
       const { nodeId, newName, newExt } = action.payload;
       const trimmedName = newName.trim();
+      const trimmedExt = newExt.trim();
 
-      if (!trimmedName || !newExt) {
-        console.error('File name and extension cannot be empty.');
+      if (!trimmedName) {
+        toast.error('File name cannot be empty.');
+        return;
+      }
+      if (hasForbiddenChars(trimmedName)) {
+        toast.error('Name contains forbidden characters.');
+        return;
+      }
+      if (!isAllowedExt(trimmedExt, allowedExtensions)) {
+        toast.error('Extension is not allowed.');
         return;
       }
 
       const node = state.nodes[nodeId];
+      if (node.parentId === null) {
+        toast.error('Root cannot be modified.');
+        return;
+      }
+
+      const parent = state.nodes[node.parentId] as FolderNode;
+
       if (node.type === 'file') {
+        const isDuplicate = parent.children.some((childId) => {
+          const child = state.nodes[childId];
+          return (
+            child.id !== nodeId &&
+            child.type === 'file' &&
+            child.name === trimmedName &&
+            isAllowedExt(child.ext, [trimmedExt])
+          );
+        });
+
+        if (isDuplicate) {
+          toast.error('A file with this name already exists.');
+          return;
+        }
+
         node.name = trimmedName;
-        node.ext = newExt;
+        node.ext = trimmedExt.startsWith('.') ? trimmedExt : `.${trimmedExt}`;
         node.updatedAt = Date.now();
       }
     },
@@ -103,7 +171,7 @@ const fsSlice = createSlice({
       const folderId = action.payload;
 
       if (folderId === state.rootId) {
-        console.error('Cannot delete the root folder.');
+        toast.error('Cannot delete the root folder.');
         return;
       }
 
@@ -127,15 +195,38 @@ const fsSlice = createSlice({
     addFile: (state, action: PayloadAction<{ parentId: NodeID; name: string; ext: string }>) => {
       const { parentId, name, ext } = action.payload;
       const trimmedName = name.trim();
+      const trimmedExt = ext.trim();
 
-      if (!trimmedName || !ext) {
-        console.error('File name and extension cannot be empty.');
+      if (!trimmedName || !trimmedExt) {
+        toast.error('File name and Extension cannot be empty.');
+        return;
+      }
+      if (hasForbiddenChars(trimmedName)) {
+        toast.error('Name contains forbidden characters.');
+        return;
+      }
+      if (!isAllowedExt(trimmedExt, allowedExtensions)) {
+        toast.error('Extension is not allowed.');
         return;
       }
 
       const parent = state.nodes[parentId];
       if (parent.type !== 'folder') {
-        console.error('Cannot add items under a file.');
+        toast.error('Cannot add items under a file.');
+        return;
+      }
+
+      const isDuplicate = parent.children.some((childId) => {
+        const child = state.nodes[childId];
+        return (
+          child.type === 'file' &&
+          child.name === trimmedName &&
+          isAllowedExt(child.ext, [trimmedExt])
+        );
+      });
+
+      if (isDuplicate) {
+        toast.error('A file with this name already exists.');
         return;
       }
 
@@ -145,7 +236,7 @@ const fsSlice = createSlice({
         parentId,
         name: trimmedName,
         type: 'file',
-        ext,
+        ext: trimmedExt.startsWith('.') ? trimmedExt : `.${trimmedExt}`,
         createdAt: Date.now(),
         updatedAt: Date.now(),
       };
