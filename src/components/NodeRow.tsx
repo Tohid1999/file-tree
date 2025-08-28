@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { confirmDelete } from '@/config/delete';
+import { validateNodeName } from '@/lib/validation';
 import ConfirmDeleteModal from '@components/ConfirmDeleteModal';
 import InlineEditInput from '@components/InlineEditInput';
 import { addFile, deleteFile, deleteFolder, renameFile, renameNode } from '@store/fsSlice';
@@ -18,18 +19,25 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
 
-  const { node, isRoot } = useSelector((state: RootState) => ({
+  const { node, fsState, isRoot } = useSelector((state: RootState) => ({
     node: state.fs.nodes[nodeId],
+    fsState: state.fs,
     isRoot: state.fs.rootId === nodeId,
   }));
 
   const handleAddFile = () => {
-    const fileName = prompt('Enter file name (e.g., notes.txt):');
-    if (!fileName) return;
+    const userInput = prompt('Enter file name (e.g., notes.txt):');
+    if (!userInput) return;
 
-    const parts = fileName.split('.');
+    const parts = userInput.split('.');
     const ext = parts.length > 1 ? `.${parts.pop()}` : '';
     const name = parts.join('.');
+
+    const error = validateNodeName(fsState, { parentId: nodeId, name, ext });
+    if (error) {
+      toast.error(error);
+      return;
+    }
 
     dispatch(addFile({ parentId: nodeId, name, ext }));
   };
@@ -44,11 +52,30 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
 
   const handleRenameSave = (newValue: string) => {
     if (node.type === 'folder') {
+      const error = validateNodeName(fsState, {
+        parentId: node.parentId!,
+        name: newValue,
+        nodeIdToIgnore: nodeId,
+      });
+      if (error) {
+        toast.error(error);
+        return;
+      }
       dispatch(renameNode({ nodeId, newName: newValue }));
     } else {
       const parts = newValue.split('.');
       const newExt = parts.length > 1 ? `.${parts.pop()}` : '';
       const newName = parts.join('.');
+      const error = validateNodeName(fsState, {
+        parentId: node.parentId!,
+        name: newName,
+        ext: newExt,
+        nodeIdToIgnore: nodeId,
+      });
+      if (error) {
+        toast.error(error);
+        return;
+      }
       dispatch(renameFile({ nodeId, newName, newExt }));
     }
     setIsRenaming(false);
