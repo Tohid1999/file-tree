@@ -28,5 +28,4 @@ export type FSState = {
 export type UIState = {
   expanded: Record<NodeID, boolean>;
   selection: NodeID | null;
-  renameEditingId: NodeID | null;
 };

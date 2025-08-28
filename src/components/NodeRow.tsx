@@ -8,7 +8,6 @@ import InlineEditInput from '@components/InlineEditInput';
 import { addFile, deleteFile, deleteFolder, renameFile, renameNode } from '@store/fsSlice';
 import type { AppDispatch, RootState } from '@store/store';
 import type { NodeID } from '@store/types';
-import { startRename, stopRename } from '@store/uiSlice';
 
 interface NodeRowProps {
   nodeId: NodeID;
@@ -17,10 +16,10 @@ interface NodeRowProps {
 const NodeRow = ({ nodeId }: NodeRowProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false);
 
-  const { node, isRenaming, isRoot } = useSelector((state: RootState) => ({
+  const { node, isRoot } = useSelector((state: RootState) => ({
     node: state.fs.nodes[nodeId],
-    isRenaming: state.ui.renameEditingId === nodeId,
     isRoot: state.fs.rootId === nodeId,
   }));
 
@@ -40,7 +39,7 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
       toast.error('Root cannot be modified.');
       return;
     }
-    dispatch(startRename(nodeId));
+    setIsRenaming(true);
   };
 
   const handleRenameSave = (newValue: string) => {
@@ -52,11 +51,11 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
       const newName = parts.join('.');
       dispatch(renameFile({ nodeId, newName, newExt }));
     }
-    dispatch(stopRename());
+    setIsRenaming(false);
   };
 
   const handleRenameCancel = () => {
-    dispatch(stopRename());
+    setIsRenaming(false);
   };
 
   const handleDelete = () => {
