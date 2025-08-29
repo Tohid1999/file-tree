@@ -48,7 +48,7 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
             </button>
           )}
           {node.type === 'folder' && (
-            <button type="button" className={buttonStyles}>
+            <button type="button" onClick={add.folder} className={buttonStyles}>
               Add Folder
             </button>
           )}

@@ -4,7 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { confirmDelete } from '@/config/delete';
 import { validateNodeName } from '@/lib/validation';
-import { addFile, deleteFile, deleteFolder, renameFile, renameNode } from '@store/fsSlice';
+import {
+  addFile,
+  addFolder,
+  deleteFile,
+  deleteFolder,
+  renameFile,
+  renameNode,
+} from '@store/fsSlice';
 import { makeSelectNodeRowData } from '@store/selectors';
 import type { AppDispatch, RootState } from '@store/store';
 import type { NodeID } from '@store/types';
@@ -38,6 +45,19 @@ export const useNodeRow = (nodeId: NodeID) => {
     }
 
     dispatch(addFile({ parentId: nodeId, name, ext }));
+  };
+
+  const handleAddFolder = () => {
+    const userInput = prompt('Enter folder name:');
+    if (!userInput) return;
+
+    const error = validateNodeName(siblings, { name: userInput, isFolder: true });
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    dispatch(addFolder({ parentId: nodeId, name: userInput }));
   };
 
   const handleStartRename = () => {
@@ -137,6 +157,7 @@ export const useNodeRow = (nodeId: NodeID) => {
     },
     add: {
       file: handleAddFile,
+      folder: handleAddFolder,
     },
   };
 };
