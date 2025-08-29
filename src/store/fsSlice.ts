@@ -30,7 +30,9 @@ const fsSlice = createSlice({
   reducers: {
     addFolder: (state, action: PayloadAction<{ parentId: NodeID; name: string }>) => {
       const { parentId, name } = action.payload;
-      const error = validateNodeName(state, { parentId, name });
+      const parent = state.nodes[parentId] as FolderNode;
+      const siblings = parent.children.map((id) => state.nodes[id]);
+      const error = validateNodeName(siblings, { name, isFolder: true });
       if (error) {
         toast.error(error);
         return;
@@ -47,7 +49,6 @@ const fsSlice = createSlice({
         updatedAt: Date.now(),
       };
 
-      const parent = state.nodes[parentId] as FolderNode;
       parent.children.push(newFolderId);
       parent.updatedAt = Date.now();
     },
@@ -58,11 +59,12 @@ const fsSlice = createSlice({
         toast.error('Root cannot be modified.');
         return;
       }
-
-      const error = validateNodeName(state, {
-        parentId: node.parentId,
+      const parent = state.nodes[node.parentId] as FolderNode;
+      const siblings = parent.children.map((id) => state.nodes[id]);
+      const error = validateNodeName(siblings, {
         name: newName,
         nodeIdToIgnore: nodeId,
+        isFolder: true,
       });
       if (error) {
         toast.error(error);
@@ -85,11 +87,13 @@ const fsSlice = createSlice({
         return;
       }
 
-      const error = validateNodeName(state, {
-        parentId: node.parentId,
+      const parent = state.nodes[node.parentId] as FolderNode;
+      const siblings = parent.children.map((id) => state.nodes[id]);
+      const error = validateNodeName(siblings, {
         name: newName,
         ext: newExt,
         nodeIdToIgnore: nodeId,
+        isFolder: false,
       });
       if (error) {
         toast.error(error);
@@ -139,7 +143,9 @@ const fsSlice = createSlice({
     },
     addFile: (state, action: PayloadAction<{ parentId: NodeID; name: string; ext: string }>) => {
       const { parentId, name, ext } = action.payload;
-      const error = validateNodeName(state, { parentId, name, ext });
+      const parent = state.nodes[parentId] as FolderNode;
+      const siblings = parent.children.map((id) => state.nodes[id]);
+      const error = validateNodeName(siblings, { name, ext, isFolder: false });
       if (error) {
         toast.error(error);
         return;
@@ -156,7 +162,6 @@ const fsSlice = createSlice({
         updatedAt: Date.now(),
       };
 
-      const parent = state.nodes[parentId] as FolderNode;
       parent.children.push(newFileId);
       parent.updatedAt = Date.now();
     },

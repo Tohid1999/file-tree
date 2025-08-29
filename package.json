@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "check:ts": "tsc --noEmit",
+    "check:ts": "tsc --project tsconfig.app.json --noEmit",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier -w \"src/**/*.{ts,tsx,css,md}\"",
     "prepare": "husky"
@@ -47,9 +47,6 @@
     "src/**/*.{ts,tsx,css,md}": [
       "prettier --write",
       "eslint --fix"
-    ],
-    "src/**/*.{ts,tsx}": [
-      "tsc --noEmit"
     ]
   }
 }

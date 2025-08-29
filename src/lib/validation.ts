@@ -1,5 +1,5 @@
 import { allowedExtensions } from '@/config/files';
-import type { FolderNode, FSState, NodeID } from '@store/types';
+import type { FSNode } from '@store/types';
 
 export const hasForbiddenChars = (s: string) => /[/:*?"<>|,;]/.test(s);
 
@@ -9,17 +9,17 @@ export const isAllowedExt = (ext: string, allow: readonly string[]) => {
 };
 
 export const validateNodeName = (
-  state: FSState,
+  siblings: FSNode[],
   {
-    parentId,
     name,
     ext,
     nodeIdToIgnore,
+    isFolder,
   }: {
-    parentId: NodeID;
     name: string;
     ext?: string;
-    nodeIdToIgnore?: NodeID;
+    nodeIdToIgnore?: string;
+    isFolder: boolean;
   }
 ): string | null => {
   const trimmedName = name.trim();
@@ -30,16 +30,16 @@ export const validateNodeName = (
     return 'Name contains forbidden characters.';
   }
 
-  const parent = state.nodes[parentId] as FolderNode;
-  if (!parent || parent.type !== 'folder') {
-    return 'Cannot add items under a file.';
-  }
-
-  const siblings = parent.children.map((id) => state.nodes[id]);
-
-  if (ext !== undefined) {
-    // It's a file
-    const trimmedExt = ext.trim();
+  if (isFolder) {
+    const isDuplicate = siblings.some(
+      (sibling) =>
+        sibling.id !== nodeIdToIgnore && sibling.type === 'folder' && sibling.name === trimmedName
+    );
+    if (isDuplicate) {
+      return 'A folder with this name already exists.';
+    }
+  } else {
+    const trimmedExt = (ext || '').trim();
     if (!isAllowedExt(trimmedExt, allowedExtensions)) {
       return 'Extension is not allowed.';
     }
@@ -52,15 +52,6 @@ export const validateNodeName = (
     );
     if (isDuplicate) {
       return 'A file with this name already exists.';
-    }
-  } else {
-    // It's a folder
-    const isDuplicate = siblings.some(
-      (sibling) =>
-        sibling.id !== nodeIdToIgnore && sibling.type === 'folder' && sibling.name === trimmedName
-    );
-    if (isDuplicate) {
-      return 'A folder with this name already exists.';
     }
   }
 
