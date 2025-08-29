@@ -15,6 +15,7 @@ import {
 import { makeSelectNodeRowData } from '@store/selectors';
 import type { AppDispatch, RootState } from '@store/store';
 import type { NodeID } from '@store/types';
+import { setSelection } from '@store/uiSlice';
 
 export const useNodeRow = (nodeId: NodeID) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -22,13 +23,27 @@ export const useNodeRow = (nodeId: NodeID) => {
   const [isRenaming, setIsRenaming] = useState(false);
 
   const selectNodeRowData = useMemo(makeSelectNodeRowData, []);
-  const { node, siblings, isRoot } = useSelector((state: RootState) =>
-    selectNodeRowData(state, nodeId)
-  );
+  const { node, siblings, isRoot, isSelected } = useSelector((state: RootState) => {
+    const baseData = selectNodeRowData(state, nodeId);
+    return {
+      ...baseData,
+      isSelected: state.ui.selection === nodeId,
+    };
+  });
 
   if (!node) {
     return null;
   }
+
+  const handleSelect = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation();
+    dispatch(setSelection(nodeId));
+  };
+
+  const handleFocus = (e: React.FocusEvent) => {
+    e.stopPropagation();
+    dispatch(setSelection(nodeId));
+  };
 
   const handleAddFile = () => {
     const userInput = prompt('Enter file name (e.g., notes.txt):');
@@ -139,6 +154,11 @@ export const useNodeRow = (nodeId: NodeID) => {
 
   return {
     node,
+    selection: {
+      isSelected,
+      select: handleSelect,
+      focus: handleFocus,
+    },
     display: {
       name: nodeDisplayName,
       initialRenameValue,

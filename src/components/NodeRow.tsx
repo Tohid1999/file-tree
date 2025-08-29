@@ -1,3 +1,6 @@
+import clsx from 'clsx';
+import { File, FilePlus, Folder, FolderPlus, Pencil, Trash2 } from 'lucide-react';
+
 import { useNodeRow } from '@/hooks/useNodeRow';
 import ConfirmDeleteModal from '@components/ConfirmDeleteModal';
 import InlineEditInput from '@components/InlineEditInput';
@@ -14,12 +17,27 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
     return null;
   }
 
-  const { node, display, rename, delete: deleteProps, add } = hookResult;
+  const { node, display, rename, delete: deleteProps, add, selection } = hookResult;
 
-  const buttonStyles = 'ml-2 px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300';
+  const buttonStyles =
+    'ml-2 p-1 text-xs text-gray-600 bg-gray-200 rounded hover:bg-gray-300 flex items-center';
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (e.key === 'Enter' || e.key === ' ') {
+      selection.select(e);
+    }
+  };
 
   return (
-    <div className="ml-5 my-1">
+    <div
+      className="ml-5 my-1 rounded-md focus:outline-none"
+      onClick={(e) => selection.select(e)}
+      onKeyDown={handleKeyDown}
+      onFocus={(e) => selection.focus(e)}
+      role="button"
+      tabIndex={0}
+    >
       {deleteProps.isModalOpen && (
         <ConfirmDeleteModal
           nodeName={display.name}
@@ -27,8 +45,19 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
           onCancel={deleteProps.cancel}
         />
       )}
-      <div className="flex items-center p-1 rounded hover:bg-gray-100">
-        <span className="w-6">{node.type === 'folder' ? '[F]' : '[f]'}</span>
+      <div
+        className={clsx(
+          'flex items-center p-1 rounded-md',
+          selection.isSelected ? 'bg-blue-100' : 'hover:bg-gray-100'
+        )}
+      >
+        <span className="w-6">
+          {node.type === 'folder' ? (
+            <Folder size={16} className="text-blue-500" />
+          ) : (
+            <File size={16} className="text-gray-500" />
+          )}
+        </span>
         {rename.isRenaming ? (
           <InlineEditInput
             value={display.initialRenameValue}
@@ -41,22 +70,22 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
             {node.type === 'file' && <span className="text-gray-500">{node.ext}</span>}
           </span>
         )}
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center">
           {node.type === 'folder' && (
             <button type="button" onClick={add.file} className={buttonStyles}>
-              Add File
+              <FilePlus size={14} className="mr-1" /> Add File
             </button>
           )}
           {node.type === 'folder' && (
             <button type="button" onClick={add.folder} className={buttonStyles}>
-              Add Folder
+              <FolderPlus size={14} className="mr-1" /> Add Folder
             </button>
           )}
           <button type="button" onClick={rename.start} className={buttonStyles}>
-            Rename
+            <Pencil size={14} className="mr-1" /> Rename
           </button>
           <button type="button" onClick={deleteProps.start} className={buttonStyles}>
-            Delete
+            <Trash2 size={14} className="mr-1" /> Delete
           </button>
         </div>
       </div>

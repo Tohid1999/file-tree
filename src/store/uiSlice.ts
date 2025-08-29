@@ -1,6 +1,7 @@
+import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { UIState } from './types';
+import type { NodeID, UIState } from './types';
 
 const initialState: UIState = {
   expanded: {},
@@ -10,7 +11,12 @@ const initialState: UIState = {
 const uiSlice = createSlice({
   name: 'ui',
   initialState,
-  reducers: {},
+  reducers: {
+    setSelection: (state, action: PayloadAction<NodeID | null>) => {
+      state.selection = action.payload;
+    },
+  },
 });
 
+export const { setSelection } = uiSlice.actions;
 export default uiSlice.reducer;

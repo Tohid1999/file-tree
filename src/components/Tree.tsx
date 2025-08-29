@@ -1,3 +1,4 @@
+import { FolderPlus } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import NodeRow from '@components/NodeRow';
@@ -22,8 +23,9 @@ const Tree = () => {
         <button
           type="button"
           onClick={handleAddFolder}
-          className="ml-4 px-2 py-1 bg-primary text-white rounded hover:bg-primary-hover"
+          className="ml-4 px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 flex items-center"
         >
+          <FolderPlus size={16} className="mr-1" />
           Add Folder to Root
         </button>
       </div>
