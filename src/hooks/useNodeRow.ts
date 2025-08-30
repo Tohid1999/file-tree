@@ -124,14 +124,13 @@ export const useNodeRow = (nodeId: NodeID) => {
       return;
     }
 
-    const nodeType = node.type;
-    if (confirmDelete[nodeType]) {
+    if (confirmDelete[node.type]) {
       setIsDeleteModalOpen(true);
     } else {
-      if (nodeType === 'file') {
+      if (node.type === 'file') {
         dispatch(deleteFile(nodeId));
         toast.success(`File "${node.name}${node.ext}" deleted.`);
-      } else if (nodeType === 'folder') {
+      } else if (node.type === 'folder') {
         dispatch(deleteFolder(nodeId));
         toast.success(`Folder "${node.name}" deleted.`);
       }
@@ -142,7 +141,7 @@ export const useNodeRow = (nodeId: NodeID) => {
     if (node.type === 'file') {
       dispatch(deleteFile(nodeId));
       toast.success(`File "${node.name}${node.ext}" deleted.`);
-    } else if (node.type === 'folder') {
+    } else {
       dispatch(deleteFolder(nodeId));
       toast.success(`Folder "${node.name}" deleted.`);
     }

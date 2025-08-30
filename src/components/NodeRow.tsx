@@ -91,7 +91,7 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
       </div>
       {node.type === 'folder' && (
         <div className="pl-5 border-l-2 border-gray-200">
-          {node.children.map((childId) => (
+          {node.children.map((childId: NodeID) => (
             <NodeRow key={childId} nodeId={childId} />
           ))}
         </div>
