@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { NodeID, UIState } from './types';
+import type { NodeID, UIState } from '../../types';
 
 const initialState: UIState = {
   expanded: {},

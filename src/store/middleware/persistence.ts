@@ -1,7 +1,7 @@
 import { saveState } from '@/lib/localStorage';
 import type { Middleware } from '@reduxjs/toolkit';
 
-import type { FSState } from './types';
+import type { FSState } from '../types';
 
 const actionsToPersist = [
   'fs/addFolder',

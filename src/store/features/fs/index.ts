@@ -5,7 +5,7 @@ import { validateNodeName } from '@/lib/validation';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { FolderNode, FSState, NodeID } from './types';
+import type { FolderNode, FSState, NodeID } from '../../types';
 
 const rootId = nanoid();
 

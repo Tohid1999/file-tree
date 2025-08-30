@@ -2,8 +2,8 @@ import { FolderPlus } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import NodeRow from '@components/NodeRow';
-import { addFolder } from '@store/fsSlice';
-import type { RootState } from '@store/store';
+import { addFolder } from '@store/features/fs';
+import type { RootState } from '@store/index';
 
 const Tree = () => {
   const dispatch = useDispatch();

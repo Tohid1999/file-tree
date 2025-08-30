@@ -11,11 +11,11 @@ import {
   deleteFolder,
   renameFile,
   renameNode,
-} from '@store/fsSlice';
-import { makeSelectNodeRowData } from '@store/selectors';
-import type { AppDispatch, RootState } from '@store/store';
+} from '@store/features/fs';
+import { makeSelectNodeRowData } from '@store/features/fs/selectors';
+import { setSelection } from '@store/features/ui';
+import type { AppDispatch, RootState } from '@store/index';
 import type { NodeID } from '@store/types';
-import { setSelection } from '@store/uiSlice';
 
 export const useNodeRow = (nodeId: NodeID) => {
   const dispatch = useDispatch<AppDispatch>();

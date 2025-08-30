@@ -1,9 +1,9 @@
 import { loadState } from '@/lib/localStorage';
 import { configureStore } from '@reduxjs/toolkit';
 
-import fsReducer from './fsSlice';
-import { persistenceMiddleware } from './persistenceMiddleware';
-import uiReducer from './uiSlice';
+import fsReducer from './features/fs';
+import uiReducer from './features/ui';
+import { persistenceMiddleware } from './middleware/persistence';
 
 const persistedState = loadState();
 

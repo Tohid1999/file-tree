@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import type { RootState } from './store';
-import type { FolderNode, FSNode, NodeID } from './types';
+import type { RootState } from '../../index';
+import type { FolderNode, FSNode, NodeID } from '../../types';
 
 const selectFs = (state: RootState) => state.fs;
 const selectNodeId = (_state: RootState, nodeId: NodeID) => nodeId;
