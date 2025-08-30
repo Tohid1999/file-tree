@@ -16,6 +16,7 @@ export const makeSelectNodeRowData = () =>
         return {
           node: null,
           siblings: [],
+          children: [],
           isRoot: false,
           isSelected: false,
         };
@@ -23,10 +24,12 @@ export const makeSelectNodeRowData = () =>
 
       const parent = node.parentId ? (nodes[node.parentId] as FolderNode) : null;
       const siblings: FSNode[] = parent ? parent.children.map((id) => nodes[id]) : [];
+      const children: FSNode[] = node.type === 'folder' ? node.children.map((id) => nodes[id]) : [];
 
       return {
         node,
         siblings,
+        children,
         isRoot: rootId === nodeId,
         isSelected: selection === nodeId,
       };

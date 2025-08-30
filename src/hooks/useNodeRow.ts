@@ -23,7 +23,7 @@ export const useNodeRow = (nodeId: NodeID) => {
   const [isRenaming, setIsRenaming] = useState(false);
 
   const selectNodeRowData = useMemo(makeSelectNodeRowData, []);
-  const { node, siblings, isRoot, isSelected } = useSelector((state: RootState) =>
+  const { node, siblings, children, isRoot, isSelected } = useSelector((state: RootState) =>
     selectNodeRowData(state, nodeId)
   );
 
@@ -49,7 +49,7 @@ export const useNodeRow = (nodeId: NodeID) => {
     const ext = parts.length > 1 ? `.${parts.pop()}` : '';
     const name = parts.join('.');
 
-    const error = validateNodeName(siblings, { name, ext, isFolder: false });
+    const error = validateNodeName(children, { name, ext, isFolder: false });
     if (error) {
       toast.error(error);
       return;
@@ -62,7 +62,7 @@ export const useNodeRow = (nodeId: NodeID) => {
     const userInput = prompt('Enter folder name:');
     if (!userInput) return;
 
-    const error = validateNodeName(siblings, { name: userInput, isFolder: true });
+    const error = validateNodeName(children, { name: userInput, isFolder: true });
     if (error) {
       toast.error(error);
       return;
