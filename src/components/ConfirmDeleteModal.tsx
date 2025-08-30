@@ -8,9 +8,16 @@ interface ConfirmDeleteModalProps {
 
 const ConfirmDeleteModal = ({ nodeName, onConfirm, onCancel }: ConfirmDeleteModalProps) => {
   return createPortal(
-    <div className="fixed inset-0 bg-opacity-25 backdrop-blur-sm flex items-center justify-center">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialog-title"
+    >
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
+        <h2 id="dialog-title" className="text-lg font-bold mb-4">
+          Confirm Deletion
+        </h2>
         <p>
           Are you sure you want to delete <strong>{nodeName}</strong>? This action cannot be undone.
         </p>
