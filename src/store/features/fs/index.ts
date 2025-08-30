@@ -51,6 +51,7 @@ const fsSlice = createSlice({
 
       parent.children.push(newFolderId);
       parent.updatedAt = Date.now();
+      toast.success(`Folder "${name.trim()}" created.`);
     },
     renameNode: (state, action: PayloadAction<{ nodeId: NodeID; newName: string }>) => {
       const { nodeId, newName } = action.payload;
@@ -164,6 +165,7 @@ const fsSlice = createSlice({
 
       parent.children.push(newFileId);
       parent.updatedAt = Date.now();
+      toast.success(`File "${name.trim()}" created.`);
     },
   },
 });
