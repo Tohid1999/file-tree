@@ -149,6 +149,7 @@ export const useNodeRow = (nodeId: NodeID) => {
 
   return {
     node,
+    isRoot,
     selection: {
       isSelected,
       select: handleSelect,

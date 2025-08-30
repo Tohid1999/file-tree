@@ -17,7 +17,7 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
     return null;
   }
 
-  const { node, display, rename, delete: deleteProps, add, selection } = hookResult;
+  const { node, isRoot, display, rename, delete: deleteProps, add, selection } = hookResult;
 
   const buttonStyles =
     'ml-2 p-1 text-xs text-gray-600 bg-gray-200 rounded hover:bg-gray-300 flex items-center';
@@ -81,12 +81,16 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
               <FolderPlus size={14} className="mr-1" /> Add Folder
             </button>
           )}
-          <button type="button" onClick={rename.start} className={buttonStyles}>
-            <Pencil size={14} className="mr-1" /> Rename
-          </button>
-          <button type="button" onClick={deleteProps.start} className={buttonStyles}>
-            <Trash2 size={14} className="mr-1" /> Delete
-          </button>
+          {!isRoot && (
+            <button type="button" onClick={rename.start} className={buttonStyles}>
+              <Pencil size={14} className="mr-1" /> Rename
+            </button>
+          )}
+          {!isRoot && (
+            <button type="button" onClick={deleteProps.start} className={buttonStyles}>
+              <Trash2 size={14} className="mr-1" /> Delete
+            </button>
+          )}
         </div>
       </div>
       {node.type === 'folder' && (
