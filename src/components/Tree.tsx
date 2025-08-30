@@ -18,7 +18,7 @@ const Tree = () => {
 
   return (
     <div className="mt-4">
-      <div className="flex items-center mb-2">
+      <div className="flex items-center mb-2 w-full justify-between">
         <h2 className="text-xl font-semibold">File Tree</h2>
         <button
           type="button"
