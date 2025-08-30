@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import toast from 'react-hot-toast';
 
-import { validateNodeName } from '@/lib/validation';
+import { validateNodeName } from '@lib/validation';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 

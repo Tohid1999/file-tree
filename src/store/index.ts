@@ -1,4 +1,4 @@
-import { loadState } from '@/lib/localStorage';
+import { loadState } from '@lib/localStorage';
 import { configureStore } from '@reduxjs/toolkit';
 
 import fsReducer from './features/fs';

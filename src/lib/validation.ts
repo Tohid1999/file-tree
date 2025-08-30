@@ -1,4 +1,4 @@
-import { allowedExtensions } from '@/config/files';
+import { allowedExtensions } from '@config/files';
 import type { FSNode } from '@store/types';
 
 export const hasForbiddenChars = (s: string) => /[/:*?"<>|,;]/.test(s);

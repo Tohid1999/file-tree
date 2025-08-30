@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { File, FilePlus, Folder, FolderPlus, Pencil, Trash2 } from 'lucide-react';
 
-import { useNodeRow } from '@/hooks/useNodeRow';
 import ConfirmDeleteModal from '@components/ConfirmDeleteModal';
 import InlineEditInput from '@components/InlineEditInput';
+import { useNodeRow } from '@hooks/useNodeRow';
 import type { NodeID } from '@store/types';
 
 interface NodeRowProps {

@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { confirmDelete } from '@/config/delete';
-import { validateNodeName } from '@/lib/validation';
+import { confirmDelete } from '@config/delete';
+import { validateNodeName } from '@lib/validation';
 import {
   addFile,
   addFolder,
