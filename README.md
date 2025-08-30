@@ -1,69 +1,65 @@
-# React + TypeScript + Vite
+# File Tree Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple, client-side file tree manager built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Create, rename, and delete files and folders.
+- State persists in `localStorage`.
+- Client-side validation for names and extensions.
+- A clean, modern UI with icons and keyboard navigation.
 
-## Expanding the ESLint configuration
+## Development Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js (v20.19+ or higher recommended)
+- pnpm (v9.0.0 or higher recommended)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Tohid1999/file-tree
+   cd file-tree
+   ```
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Configuration
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The following configurations can be adjusted:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Allowed File Extensions:** Modify the `allowedExtensions` array in `src/config/files.ts`.
+- **Delete Confirmation:** Toggle confirmation dialogs for file and folder deletion in `src/config/delete.ts`.
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `pnpm dev`
+
+Runs the app in development mode.
+Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+
+### `pnpm build`
+
+Builds the app for production to the `dist` folder.
+
+### `pnpm test`
+
+Launches the test runner in interactive watch mode.
+
+### `pnpm lint`
+
+Lints the codebase for potential errors and style issues.
+
+### `pnpm format`
+
+Formats the code with Prettier.
+
+### `pnpm check:ts`
+
+Runs the TypeScript compiler to check for type errors.
