@@ -47,30 +47,32 @@ const NodeRow = ({ nodeId }: NodeRowProps) => {
       )}
       <div
         className={clsx(
-          'flex items-center p-1 rounded-md',
+          'flex flex-col sm:flex-row sm:items-center p-1 rounded-md',
           selection.isSelected ? 'bg-blue-100' : 'hover:bg-gray-100'
         )}
       >
-        <span className="w-6">
-          {node.type === 'folder' ? (
-            <Folder size={16} className="text-blue-500" />
-          ) : (
-            <File size={16} className="text-gray-500" />
-          )}
-        </span>
-        {rename.isRenaming ? (
-          <InlineEditInput
-            value={display.initialRenameValue}
-            onSave={rename.save}
-            onCancel={rename.cancel}
-          />
-        ) : (
-          <span>
-            {node.name}
-            {node.type === 'file' && <span className="text-gray-500">{node.ext}</span>}
+        <div className="flex items-center">
+          <span className="w-6">
+            {node.type === 'folder' ? (
+              <Folder size={16} className="text-blue-500" />
+            ) : (
+              <File size={16} className="text-gray-500" />
+            )}
           </span>
-        )}
-        <div className="ml-auto flex items-center">
+          {rename.isRenaming ? (
+            <InlineEditInput
+              value={display.initialRenameValue}
+              onSave={rename.save}
+              onCancel={rename.cancel}
+            />
+          ) : (
+            <span>
+              {node.name}
+              {node.type === 'file' && <span className="text-gray-500">{node.ext}</span>}
+            </span>
+          )}
+        </div>
+        <div className="w-full sm:w-auto sm:ml-auto flex items-center flex-wrap justify-end mt-2 sm:mt-0">
           {node.type === 'folder' && (
             <button type="button" onClick={add.file} className={buttonStyles}>
               <FilePlus size={14} className="mr-1" /> Add File
