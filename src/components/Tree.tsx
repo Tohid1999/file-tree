@@ -1,13 +1,13 @@
 import { FolderPlus } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectRootId } from '@/store/features/fs/selectors';
 import NodeRow from '@components/NodeRow';
 import { addFolder } from '@store/features/fs';
-import type { RootState } from '@store/index';
 
 const Tree = () => {
   const dispatch = useDispatch();
-  const rootId = useSelector((state: RootState) => state.fs.rootId);
+  const rootId = useSelector(selectRootId);
 
   const handleAddFolder = () => {
     const folderName = prompt('Enter folder name:');

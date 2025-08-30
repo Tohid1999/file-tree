@@ -12,9 +12,9 @@ import {
   renameFile,
   renameNode,
 } from '@store/features/fs';
-import { makeSelectNodeRowData } from '@store/features/fs/selectors';
 import { setSelection } from '@store/features/ui';
 import type { AppDispatch, RootState } from '@store/index';
+import { makeSelectNodeRowData } from '@store/selectors';
 import type { NodeID } from '@store/types';
 
 export const useNodeRow = (nodeId: NodeID) => {
@@ -23,13 +23,9 @@ export const useNodeRow = (nodeId: NodeID) => {
   const [isRenaming, setIsRenaming] = useState(false);
 
   const selectNodeRowData = useMemo(makeSelectNodeRowData, []);
-  const { node, siblings, isRoot, isSelected } = useSelector((state: RootState) => {
-    const baseData = selectNodeRowData(state, nodeId);
-    return {
-      ...baseData,
-      isSelected: state.ui.selection === nodeId,
-    };
-  });
+  const { node, siblings, isRoot, isSelected } = useSelector((state: RootState) =>
+    selectNodeRowData(state, nodeId)
+  );
 
   if (!node) {
     return null;
