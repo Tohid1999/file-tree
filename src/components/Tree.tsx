@@ -1,4 +1,4 @@
-import { FolderPlus } from 'lucide-react';
+import { FolderKanban, FolderPlus } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import NodeRow from '@components/NodeRow';
@@ -18,8 +18,11 @@ const Tree = () => {
 
   return (
     <div className="mt-4">
-      <div className="flex items-center mb-2 w-full justify-between">
-        <h2 className="text-xl font-semibold">File Tree</h2>
+      <div className="flex items-center mb-6 w-full justify-between">
+        <h2 className="text-xl font-semibold flex items-center">
+          <FolderKanban size={24} className="mr-2 text-blue-600" />
+          File Tree
+        </h2>
         <button
           type="button"
           onClick={handleAddFolder}
@@ -29,7 +32,7 @@ const Tree = () => {
           Add Folder to Root
         </button>
       </div>
-      <div className="border rounded p-2">
+      <div className="border border-gray-200  rounded p-2">
         <NodeRow nodeId={rootId} />
       </div>
     </div>

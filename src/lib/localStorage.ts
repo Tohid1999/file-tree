@@ -1,6 +1,5 @@
+import { storageKey } from '@/config/files';
 import type { FSState } from '@store/types';
-
-export const storageKey = 'fsTree:v1';
 
 export const loadState = (): FSState | undefined => {
   try {
