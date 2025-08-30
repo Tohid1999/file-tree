@@ -1,6 +1,8 @@
 # File Tree Manager
 
-A simple, client-side file tree manager built with React, TypeScript, and Vite.
+A React + TypeScript project that simulates a file explorer with support for creating, renaming, and deleting files/folders, along with persistence in localStorage.
+
+🚀 **Live Demo**: [tohid-file-tree.vercel.app](https://tohid-file-tree.vercel.app/)
 
 ## Features
 
